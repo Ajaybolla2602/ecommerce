@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShopEasy - Best Deals Online</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .product-card { transition: all 0.3s; }
+    .product-card:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); }
+  </style>
+</head>
+<body class="bg-gray-50">
+
+  <!-- Navbar -->
+  <nav class="bg-white shadow sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <i class="fa-solid fa-store text-3xl text-indigo-600"></i>
+        <h1 class="text-2xl font-bold text-gray-800">ShopEasy</h1>
+      </div>
+      <div class="hidden md:flex gap-8 text-gray-600 font-medium">
+        <a href="#" class="hover:text-indigo-600">Home</a>
+        <a href="#shop" class="hover:text-indigo-600">Shop</a>
+        <a href="#" class="hover:text-indigo-600">Deals</a>
+        <a href="#" class="hover:text-indigo-600">Contact</a>
+      </div>
+      <button onclick="toggleCart()" class="flex items-center gap-2 bg-indigo-600 text-white px-5 py-2 rounded-xl hover:bg-indigo-700 transition">
+        <i class="fa-solid fa-shopping-cart"></i>
+        <span id="cart-count" class="bg-white text-indigo-600 text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">0</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-24">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+      <h2 class="text-5xl md:text-6xl font-bold mb-4">Big Savings, Fast Delivery</h2>
+      <p class="text-xl mb-8">Shop thousands of products at unbeatable prices</p>
+      <button onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})" 
+              class="bg-white text-indigo-600 px-10 py-4 rounded-2xl text-lg font-semibold hover:bg-gray-100">
+        Shop Now →
+      </button>
+    </div>
+  </section>
+
+  <!-- Products Section -->
+  <section id="shop" class="max-w-7xl mx-auto px-6 py-16">
+    <h2 class="text-4xl font-bold text-center mb-12">Featured Products</h2>
+    
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8" id="products-grid">
+      <!-- Products populated by JavaScript -->
+    </div>
+  </section>
+
+  <!-- Cart Modal -->
+  <div id="cart-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[100]">
+    <div class="bg-white rounded-3xl w-full max-w-lg mx-4 overflow-hidden">
+      <div class="px-6 py-4 border-b flex justify-between items-center">
+        <h3 class="text-2xl font-semibold">Your Cart</h3>
+        <button onclick="toggleCart()" class="text-3xl text-gray-400 hover:text-gray-600">&times;</button>
+      </div>
+      <div id="cart-items" class="px-6 py-6 max-h-96 overflow-auto"></div>
+      <div class="px-6 py-4 border-t flex justify-between items-center text-xl font-semibold">
+        <span>Total</span>
+        <span id="cart-total">$0.00</span>
+      </div>
+      <div class="p-6">
+        <button onclick="showCheckout()" 
+                class="w-full bg-indigo-600 text-white py-5 rounded-2xl text-lg font-semibold hover:bg-indigo-700">
+          Proceed to Checkout
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Checkout Modal -->
+  <div id="checkout-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[100]">
+    <div class="bg-white rounded-3xl w-full max-w-md mx-4 p-8">
+      <h2 class="text-3xl font-bold mb-6">Checkout</h2>
+      <form id="checkout-form" onsubmit="handleSubmit(event)">
+        <div class="space-y-6">
+          <div>
+            <label class="block text-sm font-medium mb-1">Full Name</label>
+            <input type="text" required class="w-full border rounded-2xl px-4 py-3" placeholder="John Doe">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Email</label>
+            <input type="email" required class="w-full border rounded-2xl px-4 py-3" placeholder="you@email.com">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Shipping Address</label>
+            <textarea required rows="3" class="w-full border rounded-2xl px-4 py-3" placeholder="123 Main Street, City"></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Card Number (demo)</label>
+            <input type="text" required maxlength="16" class="w-full border rounded-2xl px-4 py-3" value="4242424242424242">
+          </div>
+        </div>
+        <button type="submit" 
+                class="mt-8 w-full bg-green-600 text-white py-5 rounded-2xl text-lg font-semibold hover:bg-green-700">
+          Pay Now • <span id="checkout-total">$0.00</span>
+        </button>
+      </form>
+      <button onclick="hideCheckout()" class="mt-4 w-full text-gray-500">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Thank You Page -->
+  <div id="thank-you-page" class="hidden fixed inset-0 bg-white z-[200] flex items-center justify-center">
+    <div class="text-center max-w-lg px-6">
+      <div class="mx-auto w-24 h-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-6xl mb-8">
+        ✓
+      </div>
+      <h1 class="text-5xl font-bold text-gray-800 mb-4">Thank You!</h1>
+      <p class="text-xl text-gray-600 mb-2">Your order has been placed successfully.</p>
+      <p class="text-2xl font-semibold text-indigo-600 mb-8">Order #<span id="order-number">SHOP-987654</span></p>
+      <p class="text-gray-500 mb-12">We’ll send you an email confirmation shortly.<br>Estimated delivery: 3-5 business days.</p>
+      <button onclick="backToShop()" 
+              class="bg-indigo-600 text-white px-12 py-5 rounded-3xl text-xl font-semibold hover:bg-indigo-700">
+        Continue Shopping
+      </button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white py-12">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+      <p class="text-sm text-gray-400">© 2026 ShopEasy • Made with ❤️ for learning</p>
+    </div>
+  </footer>
+
+  <script>
+    // Tailwind script already loaded
+    const products = [
+      { id: 1, name: "Wireless Headphones", price: 49.99, img: "https://picsum.photos/id/1015/400/400" },
+      { id: 2, name: "Smart Watch Pro", price: 129.99, img: "https://picsum.photos/id/201/400/400" },
+      { id: 3, name: "Minimal Desk Lamp", price: 24.99, img: "https://picsum.photos/id/1005/400/400" },
+      { id: 4, name: "Eco-Friendly Tote Bag", price: 14.99, img: "https://picsum.photos/id/133/400/400" }
+    ];
+
+    let cart = [];
+
+    function renderProducts() {
+      const grid = document.getElementById('products-grid');
+      grid.innerHTML = products.map(p => `
+        <div class="product-card bg-white rounded-3xl overflow-hidden shadow">
+          <img src="${p.img}" alt="${p.name}" class="w-full h-56 object-cover">
+          <div class="p-6">
+            <h3 class="font-semibold text-xl">${p.name}</h3>
+            <p class="text-2xl font-bold text-indigo-600 mt-2">$${p.price}</p>
+            <button onclick="addToCart(${p.id})" 
+                    class="mt-6 w-full bg-indigo-600 text-white py-3 rounded-2xl hover:bg-indigo-700 font-medium">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function addToCart(id) {
+      const product = products.find(p => p.id === id);
+      cart.push(product);
+      updateCartCount();
+      alert(`${product.name} added to cart!`);
+    }
+
+    function updateCartCount() {
+      document.getElementById('cart-count').textContent = cart.length;
+    }
+
+    function toggleCart() {
+      const modal = document.getElementById('cart-modal');
+      const container = document.getElementById('cart-items');
+      const totalEl = document.getElementById('cart-total');
+      
+      if (modal.classList.contains('hidden')) {
+        let html = '';
+        let total = 0;
+        
+        cart.forEach((item, index) => {
+          total += item.price;
+          html += `
+            <div class="flex gap-4 mb-6 last:mb-0">
+              <img src="${item.img}" class="w-20 h-20 object-cover rounded-2xl">
+              <div class="flex-1">
+                <p class="font-medium">${item.name}</p>
+                <p class="text-indigo-600">$${item.price}</p>
+              </div>
+              <button onclick="removeFromCart(${index}); toggleCart()" class="text-red-500 text-2xl">&times;</button>
+            </div>`;
+        });
+        
+        if (cart.length === 0) html = `<p class="text-center text-gray-400 py-12">Cart is empty</p>`;
+        
+        container.innerHTML = html;
+        totalEl.textContent = `$${total.toFixed(2)}`;
+        modal.classList.remove('hidden');
+      } else {
+        modal.classList.add('hidden');
+      }
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      updateCartCount();
+    }
+
+    function showCheckout() {
+      toggleCart(); // close cart
+      const modal = document.getElementById('checkout-modal');
+      document.getElementById('checkout-total').textContent = 
+        `$${cart.reduce((sum, item) => sum + item.price, 0).toFixed(2)}`;
+      modal.classList.remove('hidden');
+    }
+
+    function hideCheckout() {
+      document.getElementById('checkout-modal').classList.add('hidden');
+    }
+
+    function handleSubmit(e) {
+      e.preventDefault();
+      hideCheckout();
+      
+      // Show Thank You Page
+      const thankYou = document.getElementById('thank-you-page');
+      document.getElementById('order-number').textContent = 'SHOP-' + Math.floor(100000 + Math.random() * 900000);
+      thankYou.classList.remove('hidden');
+      
+      // Clear cart after successful order
+      cart = [];
+      updateCartCount();
+    }
+
+    function backToShop() {
+      document.getElementById('thank-you-page').classList.add('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Initialize
+    window.onload = () => {
+      renderProducts();
+    };
+  </script>
+</body>
+</html>
